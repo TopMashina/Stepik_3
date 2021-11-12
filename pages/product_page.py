@@ -31,9 +31,16 @@ class ProductPage(BasePage):
         p = self.browser.find_element(*ProductPageLocators.PRODUCT_PRICE).text
         return n, p
 
-    def is_product_in_alert_matches(self, name):
+    def product_in_alert_matches_should_present(self, name):
         el = self.browser.find_elements(*ProductPageLocators.ALERT_SUCCESS)
+        res = False
         for x in el:
             if len(x.find_elements(By.XPATH, f'//*[contains(text(), "{name}")]')) > 0:
-                return True
-        return False
+                res = True
+        assert res
+
+    def success_alert_should_not_present(self):
+        assert self.is_not_element_present(*ProductPageLocators.ALERT_SUCCESS)
+
+    def success_alert_is_disappeared(self):
+        assert self.is_disappeared(*ProductPageLocators.ALERT_SUCCESS)

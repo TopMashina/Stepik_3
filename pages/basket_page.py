@@ -8,3 +8,7 @@ class BasketPage(BasePage):
 
     def is_empty_basket_message_present(self):
         return self.is_element_present(*BasketPageLocators.BASKET_MSG)
+
+    def basket_should_be_empty(self):
+        assert self.rows_in_basket() == 0
+        assert self.is_empty_basket_message_present()
