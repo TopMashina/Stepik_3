@@ -1,5 +1,8 @@
+import time
+import string
+import random
 import pytest
-
+from pages.main_page import MainPage
 from .pages.locators import ProductPageLocators
 from .pages.product_page import ProductPage
 
@@ -67,3 +70,33 @@ def test_guest_cant_see_product_in_basket_opened_from_product_page(browser):
     basket = page.go_to_basket()
     assert basket.rows_in_basket() == 0
     assert basket.is_empty_basket_message_present()
+
+
+def random_string_generator(str_size, allowed_chars):
+    return ''.join(random.choice(allowed_chars) for _ in range(str_size))
+
+
+class TestUserAddToBasketFromProductPage:
+    @pytest.fixture(scope='function', autouse=True)
+    def setup(self, browser):
+        link = "http://selenium1py.pythonanywhere.com"
+        page = MainPage(browser, link)
+        page.open()
+        login_page = page.go_to_login_page()
+        allowed_chars = string.ascii_letters + string.digits + string.punctuation
+        login_page.register_new_user(f'{str(time.time())}@fakemail.org', random_string_generator(9, allowed_chars))
+
+    def test_user_can_add_product_to_basket(self, browser):
+        link = "http://selenium1py.pythonanywhere.com/catalogue/the-shellcoders-handbook_209/?promo=newYear"
+        page = ProductPage(browser, link)
+        page.open()
+        page.add_to_basket()
+        page.solve_quiz_and_get_code()
+        page.should_be_authorized_user()
+
+    def test_user_cant_see_success_message(self, browser):
+        link = "http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/"
+        page = ProductPage(browser, link)
+        page.open()
+        page.should_be_authorized_user()
+        assert page.is_not_element_present(*ProductPageLocators.ALERT_SUCCESS)
