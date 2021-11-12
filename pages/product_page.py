@@ -1,7 +1,7 @@
 import math
 from selenium.webdriver.common.by import By
 from .base_page import BasePage
-from .locators import ProductPageLocators
+from .locators import ProductPageLocators, BasePageLocators
 from selenium.common.exceptions import NoAlertPresentException
 
 
@@ -24,7 +24,7 @@ class ProductPage(BasePage):
             print("No second alert presented")
 
     def open_basket(self):
-        self.browser.find_element(*ProductPageLocators.BASKET_BUTTON).click()
+        self.browser.find_element(*BasePageLocators.BASKET_BUTTON).click()
 
     def get_product_name_price(self):
         n = self.browser.find_element(*ProductPageLocators.PRODUCT_NAME).text

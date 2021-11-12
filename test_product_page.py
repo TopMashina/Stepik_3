@@ -59,3 +59,11 @@ def test_guest_can_go_to_login_page_from_product_page(browser):
     page.open()
     login = page.go_to_login_page()
     login.should_be_login_page()
+
+def test_guest_cant_see_product_in_basket_opened_from_product_page(browser):
+    link = "http://selenium1py.pythonanywhere.com/en-gb/catalogue/the-city-and-the-stars_95/"
+    page = ProductPage(browser, link)
+    page.open()
+    basket = page.go_to_basket()
+    assert basket.rows_in_basket() == 0
+    assert basket.is_empty_basket_message_present()
